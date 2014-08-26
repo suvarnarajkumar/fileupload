@@ -1,0 +1,7 @@
+$.ajax({
+	url: '/index_content',
+	type: 'GET',
+	success: function(data) {
+        $("#index_page").html(data);
+	}
+});

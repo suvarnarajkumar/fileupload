@@ -1,0 +1,186 @@
+<div id="contnt">
+
+<div id="content">
+<% if ((session[:logged]=="<admin>")||(Userdetails.where( username: session[:logged] ).exists?))%>
+<% if (Userdetails.where( username: session[:logged] ).exists?) %>
+<strong>USER</strong> <em><%=  ":: '"+session[:logged].upcase+"'" %></em>
+<% end %>
+<%= link_to "logout", '/adminlogout', :id => "logout" %>
+<% else %>
+<%= link_to "Login", 'javaScript:void(0)', :id => "logins" %>
+<%= link_to "SignUp", 'javaScript:void(0)', :id => "signups" %>
+<% end %>
+
+<% if (session[:logged]=="<admin>") %> 
+<%= link_to "Create User", 'javaScript:void(0)', :id => "signups" %>
+<h1>Listing USER's</h1><br/>
+      <div id="userlist">
+      <table>
+	  <thead>
+	    <tr>
+	      <th>Username</th>
+	      <th>Password</th>
+	      <th>Name</th>
+	      <th>Email</th>	      
+	    </tr>
+	  </thead>
+
+	  <tbody id="userdetails">
+		<%= render @userdetails %>
+    </tbody>
+    </table>
+    <div id="paginator_users">
+  	<%= paginate @userdetails, :param_name => :pagina_users, :remote => true %>
+  	</div>
+  	</div>	
+  	
+<% end %>
+<h1>Listing uploaded files</h1><br/>
+
+<% if ((session[:logged]=="<admin>")||(Userdetails.where( username: session[:logged] ).exists?)) %>
+<div id="add_button">
+<%= render :partial => 'upload_button' %>
+</div>
+<div class="form_content" style="display:none">
+<%= render :partial => 'form' %>
+</div>
+<br />
+<% end %>
+
+<div style="display:block;" id="data-content">
+<div id="pictures">
+      <h2>IMAGES</h2>
+      <div id="datafiles">
+		<%= render @datafiles %>
+		<br /><br />
+  		</div>
+<div id="paginator">
+			<%= paginate @datafiles, :param_name => :pagina, remote: true %>
+</div>
+</div>
+<div id="pdfs">
+      <h2>PDF FILES</h2>
+      <div id="datafiles_pdf">
+		<%= render @datafiles_pdfs %>
+  		<br /><br />
+  		</div>
+    
+<div id="paginator_pdf">
+		<%= paginate @datafiles_pdfs, :param_name => :pagina_pdf, remote: true %>
+</div>
+</div>
+<div id="docs">
+      <h2>DOC/DOCX FILES</h2>
+      <div id="datafiles_doc">
+		<%= render @datafiles_docs %>
+  		<br /><br />
+  		</div>
+    
+<div id="paginator_doc">
+	<%= paginate @datafiles_docs, :param_name => :pagina_doc, remote: true %>
+</div>
+</div>
+
+</div>
+
+
+</div>
+
+
+<div id="contents">
+<div id="previews">
+</div>
+<div id="previews1">
+<%= link_to image_tag("cross.png"), 'javaScript:void(0)', :id => "close" %>
+<div id="imgs">
+
+</div>
+<div id="send"></div>
+<div id="sends">
+<% if !((session[:logged]=="<admin>")||(Userdetails.where( username: session[:logged] ).exists?)) %> 
+<%= form_tag "/sendmail" do %>
+    <%= text_field_tag :store_img %>
+    <table>
+    <tr><td>
+    <%= label_tag :Email %>
+    </td><td>
+    <%= text_field_tag :emailid,"", required: true, title: "Multiple emails allowed, but don't use space's" %>
+   </td></tr>
+   <tr><td>
+    <%= label_tag :Message %>
+    </td><td>
+    <%= text_area_tag :msg,"", cols:"25", rows: "5" %>
+    </td></tr>
+    <tr><td></td><td>
+     <%= submit_tag "Send", :disabled => true, :title => "Please enter email.(After, move cursor out)" %>
+     </td></tr>
+     </table>
+<% end %>
+<% else %>
+    <%= label_tag :Email_List, "*Email List*", id: "list_emails" %><br />
+    <%= text_area_tag :emails,"", cols:"80", rows: "8", disabled: true, id: "all_emails" %>
+<% end %>
+</div>
+<div id="login"><br /><br />
+<%= form_tag "/adminlogin" do %>
+    <table>
+    <tr><td>
+    <%= label_tag :userID %>
+    </td><td>
+    <%= text_field_tag :userid,"", required: true %>
+   </td></tr>
+   <tr><td>
+    <%= label_tag :Password %>
+    </td><td>
+    <%= password_field_tag :passwd,"", required: true %>
+    </td></tr>
+    <tr><td></td><td>
+     <%= submit_tag "login" %>
+     </td></tr>
+     </table>
+<% end %>
+</div>
+<div id="signup"><br /><br />
+<%= form_tag "/usersignup" do %>
+    <table>
+    <tr><td>
+    <%= label_tag :UserName %>
+    </td><td>
+    <%= text_field_tag :username,"", required: true %>
+   </td></tr>
+   <tr><td>
+    <%= label_tag :Password %>
+    </td><td>
+    <%= password_field_tag :password,"", required: true %>
+    </td></tr>
+    <tr><td>
+    <%= label_tag :Name %>
+    </td><td>
+    <%= text_field_tag :name,"", required: true %>
+   </td></tr>
+    <tr><td>
+    <%= label_tag :Email %>
+    </td><td>
+    <%= email_field :email,"", required: true, id: "email" %>
+    </td></tr>
+    <tr><td></td><td>
+    <% if !(session[:logged]=="<admin>") %> 
+     <%= submit_tag "SignUp" %>
+     <% else %>
+     <%= submit_tag "Create" %>
+     <% end %>
+     </td></tr>
+     </table>
+<% end %>
+</div>
+<div id="sending">
+<%= image_tag("load.gif") %>
+</div>
+</div>
+
+</div>
+
+
+<div style="display:none;" id="scripts">
+<%= render :partial => 'scripts' %>
+</div>

@@ -1,0 +1,19 @@
+<div id="newform">
+<h1>Upload New File</h1>
+<%= form_for(@datafile, :format => :js, :remote => true) do |f| %>
+  <div class="field">
+    <%= f.label :File %><br>
+    <%= f.file_field :data, :required => true %>
+	<%=flash[:alert]%>
+  <% if @datafile.errors.any? %>
+      <% @datafile.errors.full_messages.each do |message| %>
+        <p><%= message %></p>
+      <% end %>
+  <% end %>	
+  </div>
+  <div class="actions">
+    <%= f.submit "upload" %>
+  </div>
+<% end %>
+
+</div>

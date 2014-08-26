@@ -1,0 +1,269 @@
+<script>
+$(function() {
+  $("#sends").hide();
+  $("#login").hide();
+  $("#contents #sends form input[type='submit']").attr("disabled", true);
+  $("#contents").hide();
+  $("#sending").hide();
+  $("#signup").hide();
+  var hgt=Math.max.apply(Math, [$("#pictures").outerHeight(true),$("#pdfs").outerHeight(true),$("#docs").outerHeight(true)]);
+  $("#pictures").height(hgt);
+  $("#pdfs").height(hgt);
+  $("#docs").height(hgt);
+ 
+  $("#emailid").blur(function() {
+	var check_it=0;
+    var urls;
+    $("#contents #sends form input[type='submit']").attr("disabled", true);
+    $(this).css("border-color", "grey");
+    urls = /^(\S+@\S+\.\S+)$/;
+    if(!(/^\S+,\S*$/.test($(this).val())))
+    {
+		if(urls.test($(this).val()))
+		{
+		check_it=0;
+		}
+		else
+		{
+			check_it=check_it+1;
+		}
+	}
+	else
+	{
+    var em=$(this).val().split(",");
+    $.each(em, function(index, value ) {
+       if(!urls.test(value))
+       {
+		   check_it=check_it+1;
+		   return;
+	   }
+    });
+	}
+    if (check_it==0) {
+      $("#contents #sends form input[type='submit']").attr("disabled", false);
+      $("#contents #sends form input[type='submit']").attr("title", "");
+    } else {
+      $(this).css("border-color", "red");
+      $(this).val("");
+      $(this).focus();
+    }
+  });
+  $("#new_entry").click(function() {
+    var val;
+    val = $(this).text();
+    if (val === "Add new file") {
+      $(".form_content").slideDown();
+      $(this).text("Click Here To Close");
+    } else {
+      $(".form_content:last").slideUp();
+      $(".field p").remove();
+      $(this).text("Add new file");
+    }
+  });
+  $("#contents #sends form input[type='submit']").click(function() {
+    $("#sends").hide();
+    return $("#sending").show();
+  });
+      
+  $("a#full_pic").click(function() {
+    var urls, val;
+    $("#emailid").val("");
+    $("textarea").val("");
+    $("#imgs").children().remove();
+    val = $(this).children("img").attr("alt");
+    $("#all_emails").val($(this).siblings("#emails_store").val());
+    $("#store_img").attr("value", val);
+    urls = /^.*\.(jpg|png|gif|jpeg|JPG|PNG|GIF|JPEG)$/;
+    if (urls.test(val)) {
+      $("#imgs").append("<img src=\"" + val + "\" alt=\"pic\">");
+      $("#sends").show();
+      $("#contents").show();
+      $("#emailid").focus();
+    } else {
+      urls = /^.*\.(pdf|PDF)$/;
+      if (urls.test(val)) {
+        $("#imgs").append("<embed type='application/pdf' src='" + val + "' width='790' height='290' >");
+        $("#sends").show();
+        $("#contents").show();
+        $("#emailid").focus();
+      } else {
+        $("#imgs").append("<iframe src=\"http://docs.google.com/viewer?embedded=true&url=" + encodeURIComponent(window.location.host + val) + "\" width=\"790\" height=\"290\" style=\"border: none;margin : 0 auto; display : block;\"></iframe>");
+        $("#sends").show();
+        $("#contents").show();
+        $("#emailid").focus();
+      }
+    }
+  });
+  $("a#delete_content").click(function() {
+    var r;
+    r = confirm("Are you sure?");
+    if (r === false) {
+      return false;
+    } else {
+      $.ajax({
+        url: $(this).attr("href"),
+        type: "DELETE"
+      });
+    }
+  });
+  $("#close").click(function() {
+	$("#signup,#send").css("height","27%");
+	var do_it="#signup [type=text],#signup [type=password],#signup [type=tel],#signup [type=email]";
+	$(do_it).css("border", "2px solid grey");
+	$(do_it).attr("placeholder","");
+	$(do_it).val("");
+    $("#contents").hide();
+    $("#signup").hide();
+    $("#login").hide();
+  });
+  $("#logins").click(function() {
+    $("#imgs").html("");
+    $("#sends").hide();
+    $("#signup").hide();
+    $("#contents").show();
+    $("#login").show();
+  });
+  $("#signups").click(function() {
+    $("#imgs").html("");
+    $("#sends").hide();
+    $("#login").hide();
+    $("#signup,#send").css("height","36%");
+    $("#contents").show();
+    $("#signup").show();
+  });
+  $("td #edit_userdetails").click(function() {
+	if($(this).text().localeCompare("edit")==0)
+	{
+		$(this).text("save");
+		$(this).parent("td").siblings("td").find("a").hide(); 
+		$(this).parents("tr").siblings("tr").find("a").hide();
+		var temp=$(this).parent("td").siblings("td.name");
+		var nam=temp.text();
+		temp.html("<input type='text' value='"+nam+"'>"); 
+		var temp=$(this).parent("td").siblings("td.password");
+		var password=temp.text();
+		$.ajax({
+        url: "/pwd_decrpt?pwd="+password,
+        type: "POST",
+        success: function(data) {
+        temp.html("<input type='text' value='"+decrpt_pwd+"'>");
+		}
+		});	
+	}
+    else
+    {
+		var uname=$(this).parent('td').siblings('td.username').text();
+		var mails=$(this).parent('td').siblings('td.email').text();
+		var pwd=$(this).parent('td').siblings('td.password').find('[type=text]').val();
+		var nam=$(this).parent('td').siblings('td.name').find('[type=text]').val();
+		$.ajax({
+        url: "/update_user?uname="+uname+"&pwd="+pwd+"&mails="+mails+"&nam="+nam,
+        type: "POST",
+        success: function(data) {
+        $("#index_page").html(data);
+        if($("#index_page").siblings('p').length>0)
+        {
+		   $("#index_page").siblings('p').html("Successfully Updated '"+uname.toUpperCase()+"\'s' account.........<span onclick='$(this).parent(\"p\").remove();'>x</span>");
+		   $("#index_page").siblings('p').show();
+		}
+		else
+		{
+        $("#index_page").before('<p id="email_msg">Successfully Updated "'+uname.toUpperCase()+'\'s" account.........<span onclick="$(this).parent(\'p\').remove();">x</span></p>');
+		}
+		}
+        });	
+	}
+  });
+  
+  $("td #delete_userdetails").click(function() {
+	var r = confirm("Are you sure?");
+    if (r === false) {
+      return false;
+    } else {
+		var uname=$(this).parent('td').siblings('td.username').text();
+		$.ajax({
+        url: "/delete_user?uname="+uname,
+        type: "POST",
+        success: function(data) {
+        $("#index_page").html(data);
+        if($("#index_page").siblings('p').length>0)
+        {
+		   $("#index_page").siblings('p').html("Successfully Removed '"+uname.toUpperCase()+"\'s' account.........<span onclick='$(this).parent(\"p\").remove();'>x</span>");
+		   $("#index_page").siblings('p').show();
+		}
+		else
+		{
+        $("#index_page").before('<p id="email_msg">Successfully Removed "'+uname.toUpperCase()+'\'s" account.........<span onclick="$(this).parent(\'p\').hide();">x</span></p>');
+		}
+		}
+        });	
+	}
+  });
+  
+  $("#error_msg span").click(function() {
+    $("#error_msg").hide();
+  });
+  $("#email_msg span").click(function() {
+    $("#email_msg").hide();
+  });
+  
+  $('#signup [type=password]').blur(function() {
+    var letters, uid;
+    uid = $(this).val();
+    letters = /^(?=.*\d.*)(?=.*[a-z].*)[a-z0-9]+$/;
+    if (!letters.test(uid)) {
+      $(this).val("");
+      $(this).attr("placeholder", "'a-z0-9' (alphanumeric)");
+      $(this).css("border", "2px solid red");
+    } else {
+      $(this).css("border", "2px solid grey");
+    }
+  });
+  $('#signup [type=email]').blur(function() {
+    var letters, uid;
+    uid = $(this).val();
+    letters = /^.*@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
+    if (!letters.test(uid)) {
+      $(this).val("");
+      $(this).attr("placeholder","<anyletters>@<[a-zA-Z0-9]>.<[a-zA-Z0-9]>");
+      $(this).css("border", "2px solid red");
+    } 
+    else {
+      $(this).css("border", "2px solid grey");
+		var chg = $(this);
+		chg.attr("placeholder","");
+		$.ajax({
+			url: "/emailnamecheck?email="+uid ,
+			type: "POST",        
+			success: function(data) {
+			if(data.length>0)
+			{
+			chg.val("");
+			chg.attr("placeholder",data);
+			}
+			}
+		});
+    }
+  });
+  $('#signup [type=text]').blur(function() {
+	if($(this).parent("td").siblings("td").find("label").text().localeCompare("Username")==0)
+	{
+    var uid = $(this).val();
+    var chg = $(this);
+    chg.attr("placeholder","");
+    $.ajax({
+        url: "/usernamecheck?username="+uid ,
+		type: "POST",        
+        success: function(data) {
+		if(data.length>0)
+		{
+		chg.val("");
+        chg.attr("placeholder",data);
+		}
+		}
+    });
+	}
+  });
+  
+});
+</script>

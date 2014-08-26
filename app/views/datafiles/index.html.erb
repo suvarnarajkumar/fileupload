@@ -1,0 +1,22 @@
+<% if !flash[:notice].nil? %>
+<% if flash[:notice] =~ /^.*(s|S)uccessfully.*$/ %>
+<p id="email_msg"><%= flash[:notice] %><span>x</span></p>
+<% else %>
+<p id="error_msg"><%= flash[:notice] %><span>x</span></p>
+<% end %>
+<% end %>
+<div id="index_page">
+</div>
+
+<script>
+$(function(){
+$.ajax({
+	url: '/index_content',
+	type: 'GET',
+	success: function(data) {
+        $("#index_page").html(data);
+	}
+});
+
+});
+</script>

@@ -1,0 +1,25 @@
+$('#userdetails').html('<%= escape_javascript render(@userdetails) %>');
+ 
+$('#paginator_users').html('<%= escape_javascript(paginate(@userdetails, :param_name => :pagina_users, :remote => true).to_s) %>');
+
+
+$('#datafiles').html('<%= escape_javascript render(@datafiles) %>');
+ 
+$('#paginator').html('<%= escape_javascript(paginate(@datafiles, :param_name => :pagina, :remote => true).to_s) %>');
+
+
+$('#datafiles_pdf').html('<%= escape_javascript render(@datafiles_pdfs) %>');
+ 
+$('#paginator_pdf').html('<%= escape_javascript(paginate(@datafiles_pdfs, :param_name => :pagina_pdf, :remote => true).to_s) %>');
+
+
+$('#datafiles_doc').html('<%= escape_javascript render(@datafiles_docs) %>');
+ 
+$('#paginator_doc').html('<%= escape_javascript(paginate(@datafiles_docs, :param_name => :pagina_doc, :remote => true).to_s) %>');
+
+$("#add_button").html("<%= j (render :partial => 'upload_button') %>");
+
+$(".form_content:last").hide();
+$(".form_content").html("<%= j (render :partial => 'form') %>");
+
+$('#scripts').html("<%= escape_javascript render(:partial => 'scripts') %>");

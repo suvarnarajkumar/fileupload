@@ -1,0 +1,31 @@
+        <% if datafile.data =~ /^.*\.(jpg|JPG|png|gif|jpeg|PNG|GIF|JPEG)$/ %>
+        <div>
+		<%= link_to image_tag("/uploads/#{datafile.data}", :alt =>"/uploads/#{datafile.data}"), 'javaScript:void(0)', :id => "full_pic", :title => "#{datafile.data}" %><br/>
+		<%= datafile.data %><br/>
+		<% if ((session[:logged] == datafile.username)||(session[:logged]=="<admin>")) %>
+		<%= hidden_field_tag :emails_store, datafile.emails.split(" ").join("\n") %>
+		<%= link_to 'Delete', datafile, method: :delete, :id => "delete_content", remote: true %>
+		<% end %>
+		</div>
+		<br />
+        <% elsif  datafile.data =~ /^.*\.(doc|DOC|docx|DOCX)$/ %>
+        <div>
+		<%= link_to image_tag("/uploads/<doc>.png", :alt =>"/uploads/#{datafile.data}"), 'javaScript:void(0)', :id => "full_pic", :title => "#{datafile.data}"  %><br/>
+		<%= datafile.data %><br/>
+        <% if ((session[:logged] == datafile.username)||(session[:logged]=="<admin>")) %>
+		<%= hidden_field_tag :emails_store, datafile.emails.split(" ").join("\n") %>
+        <%= link_to 'Delete', datafile, method: :delete, :id => "delete_content", remote: true %>
+		<% end %>
+		</div>
+		<br />
+        <% else %>
+        <div>
+		<%= link_to image_tag("/uploads/<pdf>.png", :alt =>"/uploads/#{datafile.data}"), 'javaScript:void(0)', :id => "full_pic", :title => "#{datafile.data}"  %><br/>
+		<%= datafile.data %><br/>
+		<% if ((session[:logged] == datafile.username)||(session[:logged]=="<admin>")) %>
+		<%= hidden_field_tag :emails_store, datafile.emails.split(" ").join("\n") %>
+		<%= link_to 'Delete', datafile, method: :delete, :id => "delete_content", remote: true %>
+		<% end %>
+		</div>
+		<br />        
+		<% end %>
