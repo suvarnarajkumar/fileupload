@@ -146,7 +146,7 @@ $(function() {
         url: "/pwd_decrpt?pwd="+password,
         type: "POST",
         success: function(data) {
-        temp.html("<input type='text' value='"+decrpt_pwd+"'>");
+        temp.html("<input type='password' value='"+decrpt_pwd+"'>");
 		}
 		});	
 	}
@@ -154,7 +154,7 @@ $(function() {
     {
 		var uname=$(this).parent('td').siblings('td.username').text();
 		var mails=$(this).parent('td').siblings('td.email').text();
-		var pwd=$(this).parent('td').siblings('td.password').find('[type=text]').val();
+		var pwd=$(this).parent('td').siblings('td.password').find('[type=password]').val();
 		var nam=$(this).parent('td').siblings('td.name').find('[type=text]').val();
 		$.ajax({
         url: "/update_user?uname="+uname+"&pwd="+pwd+"&mails="+mails+"&nam="+nam,
